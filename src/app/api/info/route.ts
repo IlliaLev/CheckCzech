@@ -19,7 +19,7 @@ export async function GET(req: Request) {
         const text = iconv.decode(Buffer.from(buffer), "utf-8");
         const data = JSON.parse(text);
 
-        const html = data.parse.text?.["*"];
+        const html = data?.parse?.text?.["*"];
         if(!html) {
             return NextResponse.json({error: "No html"});
         }
@@ -27,12 +27,31 @@ export async function GET(req: Request) {
         const dom = new JSDOM(html);
         const doc = dom.window.document;
 
-        const partOfSpeech = Array.from(doc.querySelectorAll("h3, h4"))
-            .map(el => el.textContent?.trim())
-            .filter(t => 
-                /(podstatné jméno|sloveso|přídavné jméno|příslovce|zájmeno|číslovka)/i.test(t ?? "")
-            );
+        /*const headings = Array.from(doc.querySelectorAll("h3, h4"));
 
+        const partOfSpeech: string[] = [];
+        const gender: string[] = [];
+
+        headings.forEach((el) => {
+            const text = el.textContent?.trim().toLowerCase() ?? "";
+
+            if(/(podstatné jméno|sloveso|přídavné jméno|příslovce|zájmeno|číslovka)/i.test(text)){
+                partOfSpeech.push(text);
+
+                let next = el.nextElementSibling;
+                for(let i = 0; i < 3 && next; i++){
+                    const content = next.textContent?.trim().toLowerCase() ?? "";
+
+                    if(/rod\s+(mužský|ženský|střední)/i.test(content)) {
+                        gender.push(content.match(/rod\s+(mužský|ženský|střední)/i)?.[1] ?? "");
+                        break;
+                    }
+                    next = next.nextElementSibling;
+                }
+                
+            }
+        })*/
+        
         const declension: Record<string, {singular: string, plural: string,}> = {};
         const declTable = doc.querySelectorAll("table.deklinace");
         if(declTable) {
@@ -52,7 +71,8 @@ export async function GET(req: Request) {
 
         return NextResponse.json({
             word, 
-            partOfSpeech,
+            //partOfSpeech,
+            //gender,
             declension,
         });
     } catch(err: unknown) {

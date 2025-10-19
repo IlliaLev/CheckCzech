@@ -8,7 +8,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={``}
+        className={`
+          flex justify-center items-center
+          w-screen h-screen
+          bg-[linear-gradient(135deg,#320E3B_40%,#FF0035_100%)]
+          `}
       >
         {children}
       </body>
