@@ -92,6 +92,7 @@ export default function Home() {
       {data && (
         <div className={`
           flex flex-col items-center
+          ml-2 mb-4 mr-2
         `}>
 
           {data.declension && Object.keys(data.declension).length > 0 && (
