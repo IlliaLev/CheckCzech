@@ -15,9 +15,13 @@ export async function GET(req: Request) {
 
         const res = await fetch(`https://cs.wiktionary.org/w/api.php?action=parse&format=json&page=${word}&origin=*`);
 
-        const buffer = await res.arrayBuffer();
-        const text = iconv.decode(Buffer.from(buffer), "utf-8");
-        const data = JSON.parse(text);
+        if(!res.ok) {
+            throw new Error(`Wiktionary request failed with status ${res.status}`);
+        }
+//        const buffer = await res.arrayBuffer();
+  //      const text = iconv.decode(Buffer.from(buffer), "utf-8");
+        //const data = JSON.parse(text);
+        const data = await res.json();
 
         const html = data?.parse?.text?.["*"];
         if(!html) {
