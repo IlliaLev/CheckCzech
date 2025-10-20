@@ -7,30 +7,31 @@ import Divider from "@/ui/divider";
 type WordData = {
   word: string,
   declension: Record<string, {singular: string, plural: string,}>,
+  error?: string,
 }
 
 export default function Home() {
   const [word, setWord] = useState("");
   const [data, setData] = useState<WordData | null>(null);
   const [loading, setLoading] = useState(false);
-  //const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   async function fetchWord() {
     if(!word.trim()) return;
 
     
     setLoading(true);
-    //setError(null);
+    setError(null);
 
     try {
       const res = await fetch(`/api/info?word=${word}`);
-      const json = (await res.json()) as WordData & {error?: string,};
+      const json = (await res.json()) as WordData;
 
-      if(!res.ok) throw new Error(json.error || "Unknown Error");
       setData(json);
+      if(json.error === "No html") throw new Error("Zadejte podstatné jméno");
+      else if(json.error === "Not a noun") throw new Error("Zadejte podstatné jméno.");
     } catch(err) {
-      //setError(err instanceof Error ? err.message : "Failed to fetch data");
-      console.log(err);
+      setError(err instanceof Error ? err.message : "Failed to fetch data");
       setData(null);
     } finally {
       setLoading(false);
@@ -61,9 +62,9 @@ export default function Home() {
           `}>CheckCzech</h1>
         <div className={`
           flex flex-row
-          mt-5 gap-3
+          mt-5 gap-3 mb-2
           `}>
-          <input type="text" value={word} onChange={(e) => setWord(e.target.value)} className={`
+          <input type="text" value={word} onChange={(e) => setWord(e.target.value)} placeholder="Zadejte podstatné jméno" className={`
               outline-none
               bg-white/40
               px-3 py-1
@@ -73,12 +74,21 @@ export default function Home() {
               bg-white/40
               min-w-[120px]
               rounded-2xl
+              
             `}>    
             {loading ? "Načítám" : "Hledat"}
           </button>
         </div>
-        <Divider mt="2" />
+        <Divider/>
       </div>
+      {error && (
+        <div>
+          <h2 className={`
+            font-semibold text-[#320E3B]
+            drop-shadow-sm drop-shadow-[#FF0035]
+            `}>{error}</h2>
+        </div>
+      )}
       {data && (
         <div className={`
           flex flex-col items-center

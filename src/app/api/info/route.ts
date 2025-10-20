@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import {JSDOM} from "jsdom";
 import iconv from "iconv-lite";
+import { error } from "console";
 
 export const runtime = "nodejs";
 
@@ -26,6 +27,17 @@ export async function GET(req: Request) {
 
         const dom = new JSDOM(html);
         const doc = dom.window.document;
+
+        const partOfSpeech = Array.from(doc.querySelectorAll("h3, h4"))
+            .map(el => el.textContent?.trim())
+            .filter(t => /(podstatné jméno|sloveso|přídavné jméno|příslovce|zájmeno|číslovka)/i.test(t ?? ""));
+
+        if(partOfSpeech[0] !== "podstatné jméno") {
+            return NextResponse.json({
+                word: word,
+                error: "Not a noun",
+            });
+        }
 
         /*const headings = Array.from(doc.querySelectorAll("h3, h4"));
 
@@ -71,7 +83,7 @@ export async function GET(req: Request) {
 
         return NextResponse.json({
             word, 
-            //partOfSpeech,
+            partOfSpeech,
             //gender,
             declension,
         });
