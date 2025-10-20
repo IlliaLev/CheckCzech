@@ -43,7 +43,7 @@ export default function Home() {
     <main className={`
       flex flex-col gap-10 items-center
       w-[80%] h-[80%]
-      
+      mt-3 mb-3
       bg-white/20
       sm:text-2xl
       md:w-[600px] md:h-[600px]
