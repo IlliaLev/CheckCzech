@@ -24,7 +24,8 @@ export default function Home() {
     setError(null);
 
     try {
-      const res = await fetch(`/api/info?word=${word}`);
+      const baseURL = process.env.NEXT_PUBLIC_BASE_URL || window.location.origin;
+      const res = await fetch(`${baseURL}/api/info?word=${encodeURIComponent(word)}`);
       const json = (await res.json()) as WordData;
 
       setData(json);
