@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import {JSDOM} from "jsdom";
 import iconv from "iconv-lite";
-import { error } from "console";
 
 export const runtime = "nodejs";
 

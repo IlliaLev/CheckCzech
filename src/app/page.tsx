@@ -42,12 +42,12 @@ export default function Home() {
   return (
     <main className={`
       flex flex-col gap-10 items-center
-      w-[500px] h-[500px]
-      min-w-[500px] min-h-[500px]
+      w-[80%] h-[80%]
+      
       bg-white/20
       sm:text-2xl
-      sm:w-[600px] sm:h-[600px]
-      sm:min-w-[600px] sm:min-h-[600px]
+      md:w-[600px] md:h-[600px]
+      md:min-w-[600px] md:min-h-[600px]
       rounded-3xl
     
       shadow-2xl shadow-white/40
